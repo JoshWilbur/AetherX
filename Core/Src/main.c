@@ -1,20 +1,4 @@
 /* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -90,10 +74,12 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  int delay_ms = 1000;
   while(1){
+	HAL_Delay(delay_ms);
 	pressure = MPL3115A2_pressure();
+	HAL_Delay(delay_ms);
 	temp_C = MPL3115A2_temp();
-	HAL_Delay(1000);
   }
     /* USER CODE END WHILE */
 

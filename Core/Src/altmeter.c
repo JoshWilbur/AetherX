@@ -26,40 +26,50 @@ uint8_t MPL3115A2_read(uint8_t reg){
 // Initialization function for the MPL3115A2
 void MPL3115A2_init(){
     // Setup as described on page 10 of the data sheet
-	MPL3115A2_write(CTRL_REG1, 0x39); // Set to barometer mode
-	MPL3115A2_write(PT_DATA_CFG, 0x07);
-	MPL3115A2_write(CTRL_REG1, 0xB9);
+	MPL3115A2_write(CTRL_REG1, 0x04); // Software reset
+	HAL_Delay(100);
+    MPL3115A2_write(CTRL_REG1, 0x00);
+    HAL_Delay(10);
+    MPL3115A2_write(PT_DATA_CFG, 0x07);
+
+    // Enable data flags in CTRL_REG1 and set OSR to 128
+    MPL3115A2_write(CTRL_REG1, 0x38);
+    MPL3115A2_write(CTRL_REG1, 0x39);
+    HAL_Delay(512); // OSR = 128 means 512ms sampling time
 }
 
 // Function to read pressure value from device
 float MPL3115A2_pressure(){
 	uint8_t buffer[3];
 	uint8_t status = MPL3115A2_read(STATUS_REG);
-	if (status & 0x08){
-		HAL_I2C_Master_Transmit(&hi2c1, MPL3115A2_ADDR, OUT_P_MSB, 1, HAL_MAX_DELAY);
+	if (status & 0x04){
+		uint8_t reg = OUT_P_MSB;
+		HAL_I2C_Master_Transmit(&hi2c1, MPL3115A2_ADDR, &reg, 1, HAL_MAX_DELAY);
 		HAL_I2C_Master_Receive(&hi2c1, MPL3115A2_ADDR, buffer, 3, HAL_MAX_DELAY);
 
 		// 20 bit pressure value
-		uint32_t pressure = ((uint32_t)buffer[0] << 16) | ((uint32_t)buffer[1] << 8) | buffer[2];
-		pressure >>= 4;
-		pressure /= 4.0f; // Convert to Pascal units
+		uint32_t pressure_raw = (buffer[0] << 16) | (buffer[1] << 8) | buffer[2];
+		pressure_raw >>= 4;
+		float pressure = pressure_raw / 4.0f; // Convert to Pascal units
 		return pressure;
 	}
+	return -1;
 }
 
 // Function to read temperature value from device
 float MPL3115A2_temp(){
 	uint8_t buffer[2];
 	uint8_t status = MPL3115A2_read(STATUS_REG);
-	if (status & 0x08){
-		HAL_I2C_Master_Transmit(&hi2c1, MPL3115A2_ADDR, OUT_T_MSB, 1, HAL_MAX_DELAY);
+	if (status & 0x02){
+		uint8_t reg = OUT_T_MSB;
+		HAL_I2C_Master_Transmit(&hi2c1, MPL3115A2_ADDR, &reg, 1, HAL_MAX_DELAY);
 		HAL_I2C_Master_Receive(&hi2c1, MPL3115A2_ADDR, buffer, 2, HAL_MAX_DELAY);
 
 		// 12 bit temperature value
-		uint16_t temp = ((uint16_t)buffer[0] << 8) | buffer[1];
-		temp >>= 4;
-		temp /= 16.0f; // Convert to Celsius units
+		uint16_t temp_raw = (buffer[0] << 8) | buffer[1];
+		temp_raw >>= 4;
+		float temp = temp_raw / 16.0f;
 		return temp;
 	}
+	return -1;
 }
-
