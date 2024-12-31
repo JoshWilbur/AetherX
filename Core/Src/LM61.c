@@ -1,7 +1,14 @@
 #include "main.h"
 
 // Function for polling the LM61 temperature sensor
-int LM61_read(void){
+int LM61_Read(void){
+	// Set channel to ADC1_CH13 (PC3)
+	ADC_ChannelConfTypeDef sConfig = {0};
+	sConfig.Channel = ADC_CHANNEL_13;
+	sConfig.Rank = 1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) Error_Handler();
+
 	int LM61_raw = -1;
 	HAL_ADC_Start(&hadc1); // Begin ADC conversion
     HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
@@ -11,27 +18,26 @@ int LM61_read(void){
 }
 
 // Function to return temperature
-float LM61_temp(int unit){
-	int LM61_raw = LM61_read();
-	float v_adc = (LM61_raw / 4095.0f) * 3.3f;
+float LM61_Temp(int unit){
+	int LM61_raw = LM61_Read();
+	float v_adc = ((float)LM61_raw / 4095.0f) * 3.3f;
 	float temp_C = (v_adc - 0.6) / 0.01f;
 
-	if (unit == 0){ // Return Celsius
+	if (unit == 0){ // Return temp in Celsius
 		return temp_C;
-	}else if (unit == 1){ // Return Fahrenheit
+	}else if (unit == 1){ // Return temp in Fahrenheit
 		return (temp_C * 1.8f) + 32;
-	}else{
-		return -1;
 	}
+	return -1;
 }
 
 // Function to get average temperature
-float Temp_avg(int readings){
+float Temp_Avg(int readings){
 	float sum = 0;
 	for (int i = 0; i < readings; i++){
-		sum += LM61_temp(1);
+		sum += LM61_Temp(1);
 		HAL_Delay(10);
 	}
-	float avg = sum / readings;
+	float avg = sum / (float)readings;
 	return avg;
 }

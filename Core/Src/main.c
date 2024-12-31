@@ -7,6 +7,7 @@
 /* USER CODE BEGIN Includes */
 #include "altimeter.h"
 #include "LM61.h"
+#include "OPT101.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,6 +43,7 @@ static void MX_ADC1_Init(void);
 // Global variables for debugging
 float temp = 0;
 float avg = 0;
+float opt101_out = 0;
 /* USER CODE END 0 */
 
 /**
@@ -73,15 +75,15 @@ int main(void)
   MX_I2C1_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-  MPL3115A2_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   int loop_delay = 1000;
   while(1){
-	  temp = LM61_temp(1);
-	  avg = Temp_avg(25);
+	  temp = LM61_Temp(1);
+	  avg = Temp_Avg(25);
+	  opt101_out = OPT101_Lux();
 	  HAL_Delay(loop_delay);
   }
     /* USER CODE END WHILE */
@@ -170,7 +172,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_13;
+  sConfig.Channel = ADC_CHANNEL_10;
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
