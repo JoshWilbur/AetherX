@@ -8,6 +8,7 @@
 #include "altimeter.h"
 #include "LM61.h"
 #include "OPT101.h"
+#include "DHT20.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,6 +45,7 @@ static void MX_ADC1_Init(void);
 float temp = 0;
 float avg = 0;
 float opt101_out = 0;
+int DHT20_RH = -1;
 /* USER CODE END 0 */
 
 /**
@@ -75,6 +77,7 @@ int main(void)
   MX_I2C1_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
+  DHT20_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -84,6 +87,7 @@ int main(void)
 	  temp = LM61_Temp(1);
 	  avg = Temp_Avg(25);
 	  opt101_out = OPT101_Lux();
+	  DHT20_RH = DHT20_Humidity();
 	  HAL_Delay(loop_delay);
   }
     /* USER CODE END WHILE */
