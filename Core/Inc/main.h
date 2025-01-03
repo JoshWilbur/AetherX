@@ -31,7 +31,6 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -42,6 +41,7 @@ extern ADC_HandleTypeDef hadc1;
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+extern uint16_t audio_buffer[1024];
 
 /* USER CODE END EC */
 
@@ -60,7 +60,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
