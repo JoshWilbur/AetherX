@@ -10,10 +10,9 @@ All code for this project is within Core/src. Detailed description coming soon
 # TODO:
 * Make KiCad schematic (additional filtering for components)
 * Signal processing for MAX9814 (frequency data via FFT, sound level in dB)
-* Try out RTC IC
-* Add speaker for mic and other sounds
+* Try out RTC
 * Data logging (>24hrs)
 * Add display and user input 
-* Ethanol sensor?
+* Wireless daughter boards (STM32WB55, 3D print sphere case?)
 * Finish altimeter code
 * Design and construct PCB

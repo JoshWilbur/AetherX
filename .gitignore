@@ -5,6 +5,8 @@
 .metadata/
 
 #Debug
+*Debug.launch
+STM32F401RETX_*
 Debug/
 debug/
 Release/
