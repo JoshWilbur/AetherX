@@ -9,6 +9,7 @@
 #include "LM61.h"
 #include "OPT101.h"
 #include "DHT20.h"
+#include "MAX9814.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,6 +47,7 @@ float temp = 0;
 float avg = 0;
 float opt101_out = 0;
 int DHT20_RH = -1;
+int MAX9814;
 /* USER CODE END 0 */
 
 /**
@@ -82,12 +84,13 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int loop_delay = 1000;
+  int loop_delay = 1;
   while(1){
 	  temp = LM61_Temp(1);
-	  avg = Temp_Avg(25);
+	  //avg = Temp_Avg(25);
 	  opt101_out = OPT101_Lux();
 	  DHT20_RH = DHT20_Humidity();
+	  MAX9814 = MAX9814_Read();
 	  HAL_Delay(loop_delay);
   }
     /* USER CODE END WHILE */
@@ -161,7 +164,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.ContinuousConvMode = ENABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
@@ -176,7 +179,7 @@ static void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_10;
+  sConfig.Channel = ADC_CHANNEL_13;
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)

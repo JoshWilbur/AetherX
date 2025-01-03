@@ -31,7 +31,7 @@ float DHT20_Humidity(void){
     if (HAL_I2C_Master_Receive(&hi2c1, DHT20_ADDR, data, 7, HAL_MAX_DELAY) != HAL_OK) return 0.0;
 
     // Convert raw data to temperature and humidity
-    uint32_t raw_humidity = ((uint32_t)data[1] << 12) | ((uint32_t)data[2] << 4) | ((data[3] >> 4) & 0x0F);
+    uint32_t raw_humidity = ((uint32_t)data[1] << 12) | ((uint32_t)data[2] << 4) | (data[3] & 0x0F);
     float humidity = ((float)raw_humidity / (1 << 20)) * 100.0f;
     return humidity;
 }
