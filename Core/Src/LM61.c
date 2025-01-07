@@ -20,7 +20,7 @@ int LM61_Read(void){
 // Function to return temperature
 float LM61_Temp(int unit){
 	int LM61_raw = LM61_Read();
-	float v_adc = ((float)LM61_raw / 4095.0f) * 3.3f;
+	float v_adc = ((float)LM61_raw / 4095.0f) * ADC_VRef;
 	float temp_C = (v_adc - 0.6) / 0.01f;
 
 	if (unit == 0){ // Return temp in Celsius

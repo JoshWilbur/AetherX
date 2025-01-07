@@ -1,0 +1,6 @@
+Line, Vendor, Vendor Part Number, Description, Unit Cost
+1, Digikey, LM61BIZ/NOPB-ND, Analog Temp Sensor, $1.07
+2, Digikey, 1528-5183-ND, Temp/Humidity Sensor, $5.50
+3, Digikey, 296-23090-5-ND, Optical Sensor 650nm, $7.38
+4, Adafruit, 1713, Electret Microphone Amp, $7.95
+5, Digikey, 497-17429-ND, STM32F401 MCU 64LQFP, $6.60

@@ -20,7 +20,7 @@ int OPT101_Read(void){
 // Function to output OPT101 readings in Lux
 float OPT101_Lux(void){
 	int OPT101_raw = OPT101_Read();
-	float OPT101_volt = ((float)OPT101_raw / 4095.0) * 3.3;
+	float OPT101_volt = ((float)OPT101_raw / 4095.0) * ADC_VRef;
 	const float sensitivity = 0.01; // Found via testing
 
 	float lux = OPT101_volt / sensitivity;

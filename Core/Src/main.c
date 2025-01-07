@@ -10,6 +10,7 @@
 #include "OPT101.h"
 #include "DHT20.h"
 #include "MAX9814.h"
+#include "ssd1306.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -29,6 +30,7 @@ ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c3;
 
 RTC_HandleTypeDef hrtc;
 
@@ -42,6 +44,7 @@ static void MX_DMA_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_RTC_Init(void);
+static void MX_I2C3_Init(void);
 /* USER CODE BEGIN PFP */
 /* USER CODE END PFP */
 
@@ -53,6 +56,8 @@ float avg = 0;
 float opt101_out = -1;
 int DHT20_RH = -1;
 int MAX9814 = -1;
+
+int ADC_VRef = 3.3; // Measured ADC voltage
 
 // Buffer to hold DMA content from the MAX9814
 uint16_t audio_buffer[1024];
@@ -88,14 +93,21 @@ int main(void)
   MX_I2C1_Init();
   MX_ADC1_Init();
   MX_RTC_Init();
+  MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
   DHT20_Init();
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)audio_buffer, 1024);
+  SSD1306_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int loop_delay = 0;
+  int delay_ms = 1000;
+  // Update display
+  SSD1306_Clear();
+  SSD1306_GotoXY(50, 0);
+  SSD1306_Puts("Hello!", &Font_11x18, SSD1306_COLOR_WHITE);
+  SSD1306_UpdateScreen();
   while(1){
 	  // Obtain readings from sensors
 	  temp = LM61_Temp(1);
@@ -103,8 +115,7 @@ int main(void)
 	  opt101_out = OPT101_Lux();
 	  MAX9814 = MAX9814_Read();
 	  DHT20_RH = DHT20_Humidity();
-
-	  HAL_Delay(loop_delay);
+	  HAL_Delay(delay_ms);
   }
     /* USER CODE END WHILE */
 
@@ -236,6 +247,40 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief I2C3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C3_Init(void)
+{
+
+  /* USER CODE BEGIN I2C3_Init 0 */
+
+  /* USER CODE END I2C3_Init 0 */
+
+  /* USER CODE BEGIN I2C3_Init 1 */
+
+  /* USER CODE END I2C3_Init 1 */
+  hi2c3.Instance = I2C3;
+  hi2c3.Init.ClockSpeed = 100000;
+  hi2c3.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c3.Init.OwnAddress1 = 0;
+  hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c3.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c3.Init.OwnAddress2 = 0;
+  hi2c3.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c3.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C3_Init 2 */
+
+  /* USER CODE END I2C3_Init 2 */
 
 }
 
