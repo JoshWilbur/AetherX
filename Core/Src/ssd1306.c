@@ -22,6 +22,10 @@
  */
 #include "ssd1306.h"
 
+#define SSD1306_WIDTH 128
+#define SSD1306_HEIGHT 64
+
+
 /* Write command */
 #define SSD1306_WRITECOMMAND(command)      ssd1306_I2C_Write(SSD1306_I2C_ADDR, 0x00, (command))
 /* Write data */
@@ -168,40 +172,39 @@ uint8_t SSD1306_Init(void) {
 	}
 
 	/* A little delay */
-	uint32_t p = 2500;
-	while(p>0)
-		p--;
+	int delay_ms = 1000;
+	HAL_Delay(delay_ms);
 
 	/* Init LCD */
-	SSD1306_WRITECOMMAND(0xAE); //display off
-	SSD1306_WRITECOMMAND(0x20); //Set Memory Addressing Mode
-	SSD1306_WRITECOMMAND(0x01); //00,Horizontal Addressing Mode;01,Vertical Addressing Mode;10,Page Addressing Mode (RESET);11,Invalid
-	SSD1306_WRITECOMMAND(0xB0); //Set Page Start Address for Page Addressing Mode,0-7
-	SSD1306_WRITECOMMAND(0xC8); //Set COM Output Scan Direction
-	SSD1306_WRITECOMMAND(0x00); //---set low column address
-	SSD1306_WRITECOMMAND(0x10); //---set high column address
-	SSD1306_WRITECOMMAND(0x40); //--set start line address
-	SSD1306_WRITECOMMAND(0x81); //--set contrast control register
-	SSD1306_WRITECOMMAND(0x0A); // SET CONTRAST
-	SSD1306_WRITECOMMAND(0xA1); //--set segment re-map 0 to 127
-	SSD1306_WRITECOMMAND(0xA6); //--set normal display
-	SSD1306_WRITECOMMAND(0xA8); //--set multiplex ratio(1 to 64)
-	SSD1306_WRITECOMMAND(0x3F); //
-	SSD1306_WRITECOMMAND(0xA4); //0xa4,Output follows RAM content;0xa5,Output ignores RAM content
-	SSD1306_WRITECOMMAND(0xD3); //-set display offset
-	SSD1306_WRITECOMMAND(0x00); //-not offset
-	SSD1306_WRITECOMMAND(0xD5); //--set display clock divide ratio/oscillator frequency
-	SSD1306_WRITECOMMAND(0xF0); //--set divide ratio
-	SSD1306_WRITECOMMAND(0xD9); //--set pre-charge period
-	SSD1306_WRITECOMMAND(0x22); //
-	SSD1306_WRITECOMMAND(0xDA); //--set com pins hardware configuration
-	SSD1306_WRITECOMMAND(0x12);
-	SSD1306_WRITECOMMAND(0xDB); //--set vcomh
-	SSD1306_WRITECOMMAND(0x20); //0x20,0.77xVcc
-	SSD1306_WRITECOMMAND(0x8D); //--set DC-DC enable
-	SSD1306_WRITECOMMAND(0x14); //
-	SSD1306_WRITECOMMAND(0xAF); //--turn on SSD1306 panel
-	SSD1306_WRITECOMMAND(SSD1306_DEACTIVATE_SCROLL);
+    /* Initialization sequence */
+    SSD1306_WRITECOMMAND(0xAE); // Display OFF
+    SSD1306_WRITECOMMAND(0x20); // Set Memory Addressing Mode
+    SSD1306_WRITECOMMAND(0x00); // Horizontal Addressing Mode
+    SSD1306_WRITECOMMAND(0xB0); // Set Page Start Address for Page Addressing Mode
+    SSD1306_WRITECOMMAND(0xC8); // Set COM Output Scan Direction (remapped)
+    SSD1306_WRITECOMMAND(0x00); // Set low column address
+    SSD1306_WRITECOMMAND(0x10); // Set high column address
+    SSD1306_WRITECOMMAND(0x40); // Set start line address (0)
+    SSD1306_WRITECOMMAND(0x81); // Set contrast control
+    SSD1306_WRITECOMMAND(0x0F); // Contrast value
+    SSD1306_WRITECOMMAND(0xA1); // Set segment re-map (remapped)
+    SSD1306_WRITECOMMAND(0xA6); // Set normal display
+    SSD1306_WRITECOMMAND(0xA8); // Set multiplex ratio
+    SSD1306_WRITECOMMAND(0x3F); // 64 multiplex (for 128x64)
+    SSD1306_WRITECOMMAND(0xD3); // Set display offset
+    SSD1306_WRITECOMMAND(0x00); // No offset
+    SSD1306_WRITECOMMAND(0xD5); // Set display clock divide ratio
+    SSD1306_WRITECOMMAND(0xF0); // Oscillator frequency
+    SSD1306_WRITECOMMAND(0xD9); // Set pre-charge period
+    SSD1306_WRITECOMMAND(0x22); // Pre-charge value
+    SSD1306_WRITECOMMAND(0xDA); // Set COM pins hardware configuration
+    SSD1306_WRITECOMMAND(0x12); // Alternative COM pin configuration
+    SSD1306_WRITECOMMAND(0xDB); // Set VCOMH Deselect Level
+    SSD1306_WRITECOMMAND(0x20); // 0.77x Vcc
+    SSD1306_WRITECOMMAND(0x8D); // Enable charge pump regulator
+    SSD1306_WRITECOMMAND(0x14); // Enable
+    SSD1306_WRITECOMMAND(0xAF); // Display ON
+	HAL_Delay(100);
 
 	/* Clear screen */
 	SSD1306_Fill(SSD1306_COLOR_WHITE);
@@ -212,8 +215,6 @@ uint8_t SSD1306_Init(void) {
 	/* Set default values */
 	SSD1306.CurrentX = 0;
 	SSD1306.CurrentY = 0;
-
-	/* Initialized OK */
 	SSD1306.Initialized = 1;
 
 	/* Return OK */
@@ -221,17 +222,15 @@ uint8_t SSD1306_Init(void) {
 }
 
 void SSD1306_UpdateScreen(void) {
-	uint8_t m;
+    SSD1306_WRITECOMMAND(0xB0);  // Start at page 0
+    SSD1306_WRITECOMMAND(0x00);  // Set column lower nibble
+    SSD1306_WRITECOMMAND(0x10);  // Set column higher nibble
 
-	for (m = 0; m < 8; m++) {
-		SSD1306_WRITECOMMAND(0xB0 + m);
-		SSD1306_WRITECOMMAND(0x00);
-		SSD1306_WRITECOMMAND(0x10);
-
-		/* Write multi data */
-		ssd1306_I2C_WriteMulti(SSD1306_I2C_ADDR, 0x40, &SSD1306_Buffer[SSD1306_WIDTH * m], SSD1306_WIDTH);
-	}
+    for (uint16_t i = 0; i < sizeof(SSD1306_Buffer); i += 16) {
+        ssd1306_I2C_WriteMulti(SSD1306_I2C_ADDR, 0x40, &SSD1306_Buffer[i], 16);
+    }
 }
+
 
 void SSD1306_ToggleInvert(void) {
 	uint16_t i;

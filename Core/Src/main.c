@@ -103,11 +103,9 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   int delay_ms = 1000;
+
   // Update display
   SSD1306_Clear();
-  SSD1306_GotoXY(50, 0);
-  SSD1306_Puts("Hello!", &Font_11x18, SSD1306_COLOR_WHITE);
-  SSD1306_UpdateScreen();
   while(1){
 	  // Obtain readings from sensors
 	  temp = LM61_Temp(1);
@@ -115,6 +113,12 @@ int main(void)
 	  opt101_out = OPT101_Lux();
 	  MAX9814 = MAX9814_Read();
 	  DHT20_RH = DHT20_Humidity();
+
+	  // DISPLAY TESTING
+	  SSD1306_GotoXY(0, 0);
+	  SSD1306_Puts("Hello!", &Font_11x18, SSD1306_COLOR_WHITE);
+	  SSD1306_UpdateScreen();
+
 	  HAL_Delay(delay_ms);
   }
     /* USER CODE END WHILE */
