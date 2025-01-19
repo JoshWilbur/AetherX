@@ -57,7 +57,7 @@ float opt101_out = -1;
 int DHT20_RH = -1;
 int MAX9814 = -1;
 
-int ADC_VRef = 3.3; // Measured ADC voltage
+int ADC_VRef = 3; // Measured ADC voltage
 
 // Buffer to hold DMA content from the MAX9814
 uint16_t audio_buffer[1024];
@@ -102,23 +102,22 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int delay_ms = 1000;
+  int delay_ms = 0;
 
   // Update display
+  //SSD1306_Scrolldiagright(0, 1);
+  //SSD1306_Stopscroll();
   SSD1306_Clear();
   while(1){
 	  // Obtain readings from sensors
 	  temp = LM61_Temp(1);
-	  //avg = Temp_Avg(25);
+	  avg = Temp_Avg(25);
 	  opt101_out = OPT101_Lux();
 	  MAX9814 = MAX9814_Read();
 	  DHT20_RH = DHT20_Humidity();
 
-	  // DISPLAY TESTING
-	  SSD1306_GotoXY(0, 0);
-	  SSD1306_Puts("Hello!", &Font_11x18, SSD1306_COLOR_WHITE);
-	  SSD1306_UpdateScreen();
-
+	  // Display readings on OLED
+	  SSD1306_Show_Readings(temp, avg, opt101_out, DHT20_RH);
 	  HAL_Delay(delay_ms);
   }
     /* USER CODE END WHILE */
@@ -297,7 +296,6 @@ static void MX_RTC_Init(void)
 {
 
   /* USER CODE BEGIN RTC_Init 0 */
-
   /* USER CODE END RTC_Init 0 */
 
   RTC_TimeTypeDef sTime = {0};
@@ -327,9 +325,9 @@ static void MX_RTC_Init(void)
 
   /** Initialize RTC and set the Time and Date
   */
-  sTime.Hours = 0x6;
-  sTime.Minutes = 0x4;
-  sTime.Seconds = 0x0;
+  sTime.Hours = 0x20;
+  sTime.Minutes = 0x56;
+  sTime.Seconds = 0x30;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
   if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)

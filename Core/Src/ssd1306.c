@@ -59,6 +59,40 @@ static SSD1306_t SSD1306;
 #define SSD1306_NORMALDISPLAY       0xA6
 #define SSD1306_INVERTDISPLAY       0xA7
 
+void SSD1306_Show_Readings(float temp, float avg_temp, float light, int hum){
+	char buffer[32]; // Buffer to hold strings before printing
+    RTC_TimeTypeDef time;
+
+    // Get the current time
+    HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BIN);
+
+	// Print temperature
+	SSD1306_GotoXY(0, 10);
+	sprintf(buffer, "Temp: %.2f", temp);
+	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
+
+	// Print average temperature
+	SSD1306_GotoXY(0, 20);
+	sprintf(buffer, "Average: %.2f", avg_temp);
+	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
+
+	// Print light level
+	SSD1306_GotoXY(0, 30);
+	sprintf(buffer, "Light: %.2f", light);
+	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
+
+	// Print humidity
+	SSD1306_GotoXY(0, 40);
+	sprintf(buffer, "Humidity: %d%%", hum);
+	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
+
+	// Print time from RTC
+	SSD1306_GotoXY(0, 50);
+	sprintf(buffer, "Time: %02d:%02d:%02d", time.Hours, time.Minutes, time.Seconds);
+	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
+
+	SSD1306_UpdateScreen();
+}
 
 void SSD1306_ScrollRight(uint8_t start_row, uint8_t end_row)
 {
@@ -172,8 +206,7 @@ uint8_t SSD1306_Init(void) {
 	}
 
 	/* A little delay */
-	int delay_ms = 1000;
-	HAL_Delay(delay_ms);
+	HAL_Delay(1000);
 
 	/* Init LCD */
     /* Initialization sequence */
@@ -186,7 +219,7 @@ uint8_t SSD1306_Init(void) {
     SSD1306_WRITECOMMAND(0x10); // Set high column address
     SSD1306_WRITECOMMAND(0x40); // Set start line address (0)
     SSD1306_WRITECOMMAND(0x81); // Set contrast control
-    SSD1306_WRITECOMMAND(0x0F); // Contrast value
+    SSD1306_WRITECOMMAND(0x03); // Contrast value
     SSD1306_WRITECOMMAND(0xA1); // Set segment re-map (remapped)
     SSD1306_WRITECOMMAND(0xA6); // Set normal display
     SSD1306_WRITECOMMAND(0xA8); // Set multiplex ratio
@@ -204,17 +237,16 @@ uint8_t SSD1306_Init(void) {
     SSD1306_WRITECOMMAND(0x8D); // Enable charge pump regulator
     SSD1306_WRITECOMMAND(0x14); // Enable
     SSD1306_WRITECOMMAND(0xAF); // Display ON
-	HAL_Delay(100);
 
 	/* Clear screen */
-	SSD1306_Fill(SSD1306_COLOR_WHITE);
+	SSD1306_Fill(SSD1306_COLOR_BLACK);
 
 	/* Update screen */
 	SSD1306_UpdateScreen();
 
 	/* Set default values */
 	SSD1306.CurrentX = 0;
-	SSD1306.CurrentY = 0;
+	SSD1306.CurrentY = 10; // The offset is messed up, this hack works for now
 	SSD1306.Initialized = 1;
 
 	/* Return OK */

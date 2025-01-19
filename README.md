@@ -10,12 +10,11 @@ All code for this project is within Core/src. Detailed description coming soon
 * MAX9814 - Microphone with signal output
 
 # TODO:
-
 * Signal processing for MAX9814 (frequency data via FFT, sound level in dB)
 * Get RTC working
-* Add button for standby mode
+* Standby mode (3 button presses?)
 * Data logging (>24hrs)
-* Add display and user input
+* Add user input
 * Wireless daughter boards (STM32WB55, 3D print sphere case?)
 * Finish KiCad schematic (additional filtering for components)
 * Finish altimeter code

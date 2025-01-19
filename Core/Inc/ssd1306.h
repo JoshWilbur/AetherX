@@ -279,7 +279,7 @@ void SSD1306_Stopscroll(void);
 void SSD1306_InvertDisplay (int i);
 
 
-
+void SSD1306_Show_Readings(float temp, float avg_temp, float light, int hum);
 
 
 
