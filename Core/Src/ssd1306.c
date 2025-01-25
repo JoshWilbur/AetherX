@@ -59,6 +59,26 @@ static SSD1306_t SSD1306;
 #define SSD1306_NORMALDISPLAY       0xA6
 #define SSD1306_INVERTDISPLAY       0xA7
 
+void SSD1306_Temperature(float temp, float avg_temp){
+	char buffer[32];
+
+	SSD1306_GotoXY(0, 10);
+	sprintf(buffer, "Temperature");
+	SSD1306_Puts(buffer, &Font_11x18, SSD1306_COLOR_WHITE);
+
+	// Print temperature
+	SSD1306_GotoXY(0, 30);
+	sprintf(buffer, "Live: %.2f F", temp);
+	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
+
+	// Print average temperature
+	SSD1306_GotoXY(0, 40);
+	sprintf(buffer, "Average: %.2f F", avg_temp);
+	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
+
+	SSD1306_UpdateScreen();
+}
+
 void SSD1306_Show_Readings(float temp, float avg_temp, float light, int hum){
 	char buffer[32]; // Buffer to hold strings before printing
     RTC_TimeTypeDef time;

@@ -5,7 +5,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "altimeter.h"
 #include "LM61.h"
 #include "OPT101.h"
 #include "DHT20.h"
@@ -59,7 +58,7 @@ int DHT20_RH = -1;
 int MAX9814 = -1;
 int button = -1;
 
-int ADC_VRef = 3; // Measured ADC voltage
+float ADC_VRef = -1; // Measured ADC voltage
 
 // Buffer to hold DMA content from the MAX9814
 uint16_t audio_buffer[1024];
@@ -115,10 +114,12 @@ int main(void)
 	  opt101_out = OPT101_Lux();
 	  MAX9814 = MAX9814_Read();
 	  DHT20_RH = DHT20_Humidity();
-	  button = poll_button();
+	  button = Poll_Button1();
+	  ADC_VRef = Read_VADC();
 
 	  // Display readings on OLED
-	  SSD1306_Show_Readings(temp, avg, opt101_out, DHT20_RH);
+	  SSD1306_Temperature(temp, avg);
+	  //SSD1306_Show_Readings(temp, avg, opt101_out, DHT20_RH);
 	  HAL_Delay(delay_ms);
   }
     /* USER CODE END WHILE */
@@ -382,8 +383,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin : PC4 */
-  GPIO_InitStruct.Pin = GPIO_PIN_4;
+  /*Configure GPIO pins : PC4 PC5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -393,6 +394,25 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+float Read_VADC(void){
+	// Set channel to internal reference channel
+	ADC_ChannelConfTypeDef sConfig = {0};
+	sConfig.Channel = ADC_CHANNEL_VREFINT;
+	sConfig.Rank = 1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) Error_Handler();
+
+    uint32_t adc_value = 0;
+    HAL_ADC_Start(&hadc1);
+    HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+    adc_value = HAL_ADC_GetValue(&hadc1);
+    HAL_ADC_Stop(&hadc1);
+    float voltage = (4095.0f) / adc_value;
+
+    if (voltage == 0) return 3.0;
+    return voltage;
+}
+
 /* USER CODE END 4 */
 
 /**
