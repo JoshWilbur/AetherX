@@ -11,6 +11,7 @@
 #include "DHT20.h"
 #include "MAX9814.h"
 #include "ssd1306.h"
+#include "button.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,6 +57,7 @@ float avg = 0;
 float opt101_out = -1;
 int DHT20_RH = -1;
 int MAX9814 = -1;
+int button = -1;
 
 int ADC_VRef = 3; // Measured ADC voltage
 
@@ -105,8 +107,6 @@ int main(void)
   int delay_ms = 0;
 
   // Update display
-  //SSD1306_Scrolldiagright(0, 1);
-  //SSD1306_Stopscroll();
   SSD1306_Clear();
   while(1){
 	  // Obtain readings from sensors
@@ -115,6 +115,7 @@ int main(void)
 	  opt101_out = OPT101_Lux();
 	  MAX9814 = MAX9814_Read();
 	  DHT20_RH = DHT20_Humidity();
+	  button = poll_button();
 
 	  // Display readings on OLED
 	  SSD1306_Show_Readings(temp, avg, opt101_out, DHT20_RH);
@@ -327,7 +328,7 @@ static void MX_RTC_Init(void)
   */
   sTime.Hours = 0x20;
   sTime.Minutes = 0x56;
-  sTime.Seconds = 0x30;
+  sTime.Seconds = 0x0;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
   if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
@@ -372,6 +373,7 @@ static void MX_DMA_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 /* USER CODE BEGIN MX_GPIO_Init_1 */
 /* USER CODE END MX_GPIO_Init_1 */
 
@@ -379,6 +381,12 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin : PC4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
