@@ -4119,10 +4119,6 @@
 		(uuid "38b55161-afa4-46b1-84af-30398ff79483")
 	)
 	(no_connect
-		(at 127 106.68)
-		(uuid "39a6cddd-044f-49eb-8232-9d05f860d9ab")
-	)
-	(no_connect
 		(at 160.02 101.6)
 		(uuid "3c356274-9a0b-40ed-8d6d-8f067152816c")
 	)
@@ -4293,16 +4289,6 @@
 			(type default)
 		)
 		(uuid "057e72eb-a280-4c35-8b3e-e7d0bc96b99c")
-	)
-	(wire
-		(pts
-			(xy 160.02 27.94) (xy 165.1 27.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "09812e3d-f98e-4319-9d87-734ea045c19f")
 	)
 	(wire
 		(pts
@@ -4716,6 +4702,16 @@
 	)
 	(wire
 		(pts
+			(xy 175.26 36.83) (xy 180.34 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6d3a0292-9fd6-40ac-b19a-aa39fb9df16c")
+	)
+	(wire
+		(pts
 			(xy 120.65 58.42) (xy 127 58.42)
 		)
 		(stroke
@@ -4956,7 +4952,7 @@
 	)
 	(wire
 		(pts
-			(xy 172.72 27.94) (xy 175.26 27.94)
+			(xy 187.96 36.83) (xy 190.5 36.83)
 		)
 		(stroke
 			(width 0)
@@ -5023,6 +5019,16 @@
 			(type default)
 		)
 		(uuid "a956058b-4e02-4993-8d04-9aa4b9098835")
+	)
+	(wire
+		(pts
+			(xy 116.84 106.68) (xy 127 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ab0412f8-65fa-47f4-a58b-937c7b2ea0fe")
 	)
 	(wire
 		(pts
@@ -5106,7 +5112,7 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 27.94) (xy 182.88 36.83)
+			(xy 198.12 36.83) (xy 198.12 45.72)
 		)
 		(stroke
 			(width 0)
@@ -5474,6 +5480,16 @@
 		)
 		(uuid "1681ad4b-ce7d-4fa5-8841-4ccc05d57743")
 	)
+	(label "LED"
+		(at 116.84 106.68 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1cbf0874-6568-4310-b382-e81c15b2fa1a")
+	)
 	(label "ADC1_CH4"
 		(at 161.29 63.5 0)
 		(effects
@@ -5523,6 +5539,16 @@
 			(justify left bottom)
 		)
 		(uuid "5f9ecd57-ef47-4ac7-a6ac-8fa122fee8d0")
+	)
+	(label "LED"
+		(at 175.26 36.83 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a80c6dee-498e-42d7-99b4-46988ca1d9a4")
 	)
 	(label "SWDIO"
 		(at 177.8 86.36 0)
@@ -5594,7 +5620,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "02000dd6-c13d-4848-984c-0fb47ca491fb")
-		(property "Reference" "SW1"
+		(property "Reference" "SW_BOOT1"
 			(at 101.6 53.086 0)
 			(effects
 				(font
@@ -5650,7 +5676,7 @@
 		(instances
 			(project ""
 				(path "/e3a9a061-ed84-4419-81aa-dfe9405e0b6b"
-					(reference "SW1")
+					(reference "SW_BOOT1")
 					(unit 1)
 				)
 			)
@@ -5926,7 +5952,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 182.88 36.83 0)
+		(at 198.12 45.72 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5935,7 +5961,7 @@
 		(fields_autoplaced yes)
 		(uuid "09a90bca-d5d6-4feb-a232-46c65eefa851")
 		(property "Reference" "#PWR08"
-			(at 182.88 43.18 0)
+			(at 198.12 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5944,7 +5970,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 182.88 41.91 0)
+			(at 198.12 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5953,7 +5979,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 182.88 36.83 0)
+			(at 198.12 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5962,7 +5988,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 182.88 36.83 0)
+			(at 198.12 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5971,7 +5997,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 182.88 36.83 0)
+			(at 198.12 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6527,7 +6553,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_US")
-		(at 168.91 27.94 90)
+		(at 184.15 36.83 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -6535,7 +6561,7 @@
 		(dnp no)
 		(uuid "2cc0ccf0-e6db-47d0-8685-31dd6dedd60a")
 		(property "Reference" "R2"
-			(at 169.164 23.622 90)
+			(at 184.404 32.512 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6543,7 +6569,7 @@
 			)
 		)
 		(property "Value" "2.2k"
-			(at 169.418 25.654 90)
+			(at 184.658 34.544 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6551,7 +6577,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
-			(at 169.164 26.924 90)
+			(at 184.404 35.814 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6560,7 +6586,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 168.91 27.94 0)
+			(at 184.15 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6569,7 +6595,7 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
-			(at 168.91 27.94 0)
+			(at 184.15 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8224,7 +8250,7 @@
 	)
 	(symbol
 		(lib_id "Device:LED")
-		(at 179.07 27.94 180)
+		(at 194.31 36.83 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -8232,7 +8258,7 @@
 		(dnp no)
 		(uuid "770b9558-b36f-46b7-b2f2-2fd9975c5c03")
 		(property "Reference" "D1"
-			(at 179.07 25.4 0)
+			(at 194.31 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8240,7 +8266,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 179.324 25.4 0)
+			(at 194.564 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8249,7 +8275,7 @@
 			)
 		)
 		(property "Footprint" "LED_THT:LED_D5.0mm"
-			(at 179.07 27.94 0)
+			(at 194.31 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8258,7 +8284,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 179.07 27.94 0)
+			(at 194.31 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8267,7 +8293,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 179.07 27.94 0)
+			(at 194.31 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9410,7 +9436,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b661c6e9-797e-416c-b0af-22877ba595bf")
-		(property "Reference" "SW2"
+		(property "Reference" "SW1"
 			(at 33.02 114.2999 90)
 			(effects
 				(font
@@ -9464,7 +9490,7 @@
 		(instances
 			(project ""
 				(path "/e3a9a061-ed84-4419-81aa-dfe9405e0b6b"
-					(reference "SW2")
+					(reference "SW1")
 					(unit 1)
 				)
 			)
@@ -9888,7 +9914,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "feb32d08-96db-46e3-920b-b521d2c3e3f7")
-		(property "Reference" "SW3"
+		(property "Reference" "SW2"
 			(at 33.02 149.8599 90)
 			(effects
 				(font
@@ -9942,7 +9968,7 @@
 		(instances
 			(project "AetherX_KiCad"
 				(path "/e3a9a061-ed84-4419-81aa-dfe9405e0b6b"
-					(reference "SW3")
+					(reference "SW2")
 					(unit 1)
 				)
 			)
