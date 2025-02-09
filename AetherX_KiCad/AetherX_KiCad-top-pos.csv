@@ -1,0 +1,10 @@
+Designator,Val,Package,Mid X,Mid Y,Rotation,Layer
+C4,0.1u,C_0402_1005Metric_Pad0.74x0.62mm_HandSolder,171.9325,-85.5,0,top
+C5,0.1u,C_0402_1005Metric_Pad0.74x0.62mm_HandSolder,165.0675,-98,180,top
+C6,0.1u,C_0402_1005Metric_Pad0.74x0.62mm_HandSolder,158.1825,-98,180,top
+C7,4.7u,C_0805_2012Metric_Pad1.18x1.45mm_HandSolder,153.2875,-82.75,180,top
+C10,0.1u,C_0402_1005Metric_Pad0.74x0.62mm_HandSolder,140.6825,-76.5,0,top
+C11,0.1u,C_0402_1005Metric_Pad0.74x0.62mm_HandSolder,189.25,-95.75,0,top
+C12,0.1u,C_0402_1005Metric_Pad0.74x0.62mm_HandSolder,136.9325,-101,0,top
+C13,0.1u,C_0402_1005Metric_Pad0.74x0.62mm_HandSolder,117.6825,-87.25,180,top
+U1,STM32F401RETx,LQFP-64_10x10mm_P0.5mm,161.575,-89.25,0,top

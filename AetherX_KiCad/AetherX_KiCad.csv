@@ -1,0 +1,4 @@
+Comment,Designator,Footprint,LCSC
+0.1u,"C4,C5,C6,C10,C11,C12,C13",Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder,C141382
+4.7u,C7,Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder,C1779
+STM32F401RETx,U1,Package_QFP:LQFP-64_10x10mm_P0.5mm,C116978
