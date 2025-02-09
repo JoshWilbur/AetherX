@@ -1,6 +1,8 @@
 # AetherX
 
-All code for this project is within Core/src. Detailed description coming soon
+AetherX is a precision environmental sensor which can gather a number of statistics in real time. This device was designed with ease of use and portability in mind. More details and an operation guide coming soon...
+
+All code for this project is within Core/src. Schematic, PCB and assembly files are contained within AetherX_KiCad. 
 
 **Sensors:**
 
