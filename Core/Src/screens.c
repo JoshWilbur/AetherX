@@ -35,7 +35,7 @@ void SSD1306_Light(float light, float light_avg){
 
 	// Print average temperature
 	SSD1306_GotoXY(0, 40);
-	sprintf(buffer, "Average: %.2  Lux", light_avg);
+	sprintf(buffer, "Average: %.2f  Lux", light_avg);
 	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
 }
 

@@ -184,7 +184,7 @@ uint8_t SSD1306_Init(void) {
     SSD1306_WRITECOMMAND(0x10); // Set high column address
     SSD1306_WRITECOMMAND(0x40); // Set start line address (0)
     SSD1306_WRITECOMMAND(0x81); // Set contrast control
-    SSD1306_WRITECOMMAND(0x03); // Contrast value
+    SSD1306_WRITECOMMAND(0x05); // Contrast value (IE BRIGHTNESS)
     SSD1306_WRITECOMMAND(0xA1); // Set segment re-map (remapped)
     SSD1306_WRITECOMMAND(0xA6); // Set normal display
     SSD1306_WRITECOMMAND(0xA8); // Set multiplex ratio
