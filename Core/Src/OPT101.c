@@ -21,8 +21,18 @@ int OPT101_Read(void){
 float OPT101_Lux(void){
 	int OPT101_raw = OPT101_Read();
 	float OPT101_volt = ((float)OPT101_raw / 4095.0) * ADC_VRef;
-	const float sensitivity = 0.01; // Found via testing
+	const float sensitivity = 0.00045; // V per lux
 
 	float lux = OPT101_volt / sensitivity;
 	return lux;
+}
+
+float OPT101_Avg(int readings){
+	float sum = 0;
+	for (int i = 0; i < readings; i++){
+		sum += OPT101_Lux();
+		HAL_Delay(10);
+	}
+	float avg = sum / (float)readings;
+	return avg;
 }

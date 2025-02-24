@@ -10,6 +10,7 @@
 #include "DHT20.h"
 #include "MAX9814.h"
 #include "ssd1306.h"
+#include "screens.h"
 #include "button.h"
 /* USER CODE END Includes */
 
@@ -50,15 +51,9 @@ static void MX_I2C3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-// Global variables for debugging
-float temp = 0;
-float avg = 0;
-float opt101_out = -1;
-int DHT20_RH = -1;
-int MAX9814 = -1;
-int button = -1;
-
-float ADC_VRef = -1; // Measured ADC voltage
+// Measured ADC voltage
+float ADC_VRef = 3.0;
+int screen_state = 0;
 
 // Buffer to hold DMA content from the MAX9814
 uint16_t audio_buffer[1024];
@@ -103,23 +98,64 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int delay_ms = 0;
+  int delay_ms = 1;
+
+  float temp_val, temp_avg, light_val, light_avg;
+  int hum_val;
+  int LED = 0;
+  int MAX9814 = -1;
 
   // Update display
-  SSD1306_Clear();
+  //SSD1306_Clear();
+  SSD1306_ScrollLeft(0,7);
   while(1){
 	  // Obtain readings from sensors
-	  temp = LM61_Temp(1);
-	  avg = Temp_Avg(25);
-	  opt101_out = OPT101_Lux();
+	  temp_val = LM61_Temp(1);
+	  light_val = OPT101_Lux();
 	  MAX9814 = MAX9814_Read();
-	  DHT20_RH = DHT20_Humidity();
-	  button = Poll_Button1();
-	  ADC_VRef = Read_VADC();
+	  hum_val = DHT20_Humidity();
+	  ADC_VRef = Read_VADC() + 0.3; // TODO: fix this
 
-	  // Display readings on OLED
-	  SSD1306_Temperature(temp, avg);
-	  //SSD1306_Show_Readings(temp, avg, opt101_out, DHT20_RH);
+	  // Obtain averages
+	  temp_avg = Temp_Avg(25);
+	  light_avg = OPT101_Avg(2);
+
+	  // Select screen with switch 1
+	  if (screen_flag == 1){
+		  screen_state++;
+		  SSD1306_Stopscroll();
+		  SSD1306_Clear();
+		  screen_flag = 0;
+	  }
+
+	  // Toggle LED with switch 2
+	  if (LED_flag == 1){
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
+	  }else{
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET);
+	  }
+
+	  // Display readings on OLED using switch case
+	  switch (screen_state) {
+		  case 0:
+			  SSD1306_Show_Readings(temp_val, temp_avg, light_val, hum_val);
+			  break;
+
+		  case 1:
+			  SSD1306_Temperature(temp_val, temp_avg);
+			  break;
+
+		  case 2:
+			  SSD1306_Light(light_val, light_avg);
+			  break;
+
+		  default:
+			  SSD1306_Show_Readings(temp_val, temp_avg, light_val, hum_val);
+			  screen_state = 0;
+			  break;
+	  }
+
+	  SSD1306_UpdateScreen();
 	  HAL_Delay(delay_ms);
   }
     /* USER CODE END WHILE */
@@ -388,7 +424,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PC4 PC5 */
   GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
@@ -400,6 +436,12 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
+  // Enable and set priority for EXTI interrupts
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 /* USER CODE END MX_GPIO_Init_2 */
 }
 

@@ -26,6 +26,7 @@ Dma.ADC1.0.RequestParameters=Instance,Direction,PeriphInc,MemInc,PeriphDataAlign
 Dma.Request0=ADC1
 Dma.RequestsNb=1
 File.Version=6
+GPIO.groupedBy=Group By Peripherals
 I2C1.ClockSpeed=100000
 I2C1.IPParameters=ClockSpeed
 I2C3.ClockSpeed=100000

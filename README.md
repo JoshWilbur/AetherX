@@ -12,7 +12,6 @@ All code for this project is within Core/src. Schematic, PCB and assembly files 
 * MAX9814 - Microphone with signal output
 
 # TODO:
-
 **Software**
 
 * ADC internal voltage reference
