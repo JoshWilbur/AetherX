@@ -105,8 +105,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   int delay_ms = 1;
 
-  float temp_val, temp_avg, light_val, light_avg;
-  int hum_val;
+  float temp_val, temp_avg, light_val, light_avg = -1;
+  int hum_val = -1;
   int MAX9814 = -1;
 
   // Update display
@@ -119,7 +119,7 @@ int main(void)
 		  light_val = OPT101_Lux();
 		  MAX9814 = MAX9814_Read();
 		  hum_val = DHT20_Humidity();
-		  ADC_VRef = Read_VADC() + 0.3; // TODO: fix this
+		  ADC_VRef = Read_VADC();
 		  read_flag = 0; // Reset flag
 	  }
 
@@ -145,7 +145,7 @@ int main(void)
 	  // Display readings on OLED using switch case
 	  switch (screen_state) {
 		  case 0:
-			  SSD1306_Show_Readings(temp_val, temp_avg, light_val, hum_val);
+			  SSD1306_Show_Readings(temp_val, ADC_VRef, light_val, hum_val);
 			  break;
 
 		  case 1:
@@ -157,7 +157,7 @@ int main(void)
 			  break;
 
 		  default:
-			  SSD1306_Show_Readings(temp_val, temp_avg, light_val, hum_val);
+			  SSD1306_Show_Readings(temp_val, ADC_VRef, light_val, hum_val);
 			  screen_state = 0;
 			  break;
 	  }
@@ -512,7 +512,8 @@ float Read_VADC(void){
     HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
     adc_value = HAL_ADC_GetValue(&hadc1);
     HAL_ADC_Stop(&hadc1);
-    float voltage = (4095.0f) / adc_value;
+    float VREF = 1.2f; // Define reference voltage
+    float voltage = (VREF * 4095.0f) / adc_value;
 
     if (voltage == 0) return 3.0;
     return voltage;

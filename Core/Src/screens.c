@@ -39,7 +39,7 @@ void SSD1306_Light(float light, float light_avg){
 	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
 }
 
-void SSD1306_Show_Readings(float temp, float avg_temp, float light, int hum){
+void SSD1306_Show_Readings(float temp, float volts, float light, int hum){
 	char buffer[32]; // Buffer to hold strings before printing
     RTC_TimeTypeDef time;
 
@@ -48,17 +48,17 @@ void SSD1306_Show_Readings(float temp, float avg_temp, float light, int hum){
 
 	// Print temperature
 	SSD1306_GotoXY(0, 10);
-	sprintf(buffer, "Temp: %.2f", temp);
+	sprintf(buffer, "Temp: %.2f F", temp);
 	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
 
 	// Print average temperature
 	SSD1306_GotoXY(0, 20);
-	sprintf(buffer, "Average: %.2f", avg_temp);
+	sprintf(buffer, "V_ADC: %.2f V", volts);
 	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
 
 	// Print light level
 	SSD1306_GotoXY(0, 30);
-	sprintf(buffer, "Light: %.2f", light);
+	sprintf(buffer, "Light: %.2f Lux", light);
 	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
 
 	// Print humidity
