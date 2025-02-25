@@ -103,7 +103,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int delay_ms = 1;
+  int delay_ms = 0;
 
   float temp_val, temp_avg, light_val, light_avg = -1;
   int hum_val = -1;
@@ -137,9 +137,8 @@ int main(void)
 
 	  // Toggle LED with switch 2
 	  if (LED_flag == 1){
-		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET);
-	  }else{
-		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET);
+		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_10);
+		  LED_flag = 0;
 	  }
 
 	  // Display readings on OLED using switch case
@@ -413,7 +412,7 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 249;
+  htim2.Init.Prescaler = 124;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 71999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV2;

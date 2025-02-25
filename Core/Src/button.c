@@ -33,7 +33,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
     }
 }
 
-// TIM2 callback, triggers every 0.25 seconds
+// TIM2 callback, triggers every ~0.125 seconds
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(htim->Instance == TIM2){ // Confirm htim2 is the interrupt clock
 		read_flag = 1; // Set flag to calculate RPM
