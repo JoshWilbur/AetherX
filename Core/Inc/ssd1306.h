@@ -82,6 +82,7 @@ uint8_t SSD1306_Init(void);
  * @retval None
  */
 void SSD1306_UpdateScreen(void);
+void SSD1306_TurnOff(void);
 
 /**
  * @brief  Toggles pixels invertion inside internal RAM

@@ -59,6 +59,12 @@ static SSD1306_t SSD1306;
 #define SSD1306_NORMALDISPLAY       0xA6
 #define SSD1306_INVERTDISPLAY       0xA7
 
+void SSD1306_TurnOff(void) {
+    SSD1306_WRITECOMMAND(0xAE); // Display OFF
+    SSD1306_WRITECOMMAND(0x8D); // Charge Pump disable
+    SSD1306_WRITECOMMAND(0x10); // Set Charge Pump to OFF
+}
+
 void SSD1306_ScrollRight(uint8_t start_row, uint8_t end_row)
 {
   SSD1306_WRITECOMMAND (SSD1306_RIGHT_HORIZONTAL_SCROLL);  // send 0x26

@@ -113,6 +113,20 @@ int main(void)
   //SSD1306_Clear();
   SSD1306_ScrollLeft(0,7);
   while(1){
+	  // Handle standby
+	  if (standby_flag == 1){
+		  // TODO: add wakeup
+		  SSD1306_TurnOff(); // Shut off display
+		  for (int i = 0; i < 4; i++){
+			  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_10);
+			  HAL_Delay(250);
+		  }
+		  HAL_PWR_EnterSTANDBYMode();  // Enter standby mode
+	  }
+
+	  // Track button inputs
+	  if (button_flag != 0) Button_History();
+
 	  // Obtain readings from sensors with timer interrupt
 	  if (read_flag == 1){
 		  temp_val = LM61_Temp(1);
