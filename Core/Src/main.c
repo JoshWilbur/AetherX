@@ -103,7 +103,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int delay_ms = 0;
+  int delay_ms = 1;
 
   float temp_val, temp_avg, light_val, light_avg = -1;
   int hum_val = -1;
@@ -114,14 +114,18 @@ int main(void)
   SSD1306_ScrollLeft(0,7);
   while(1){
 	  // Handle standby
-	  if (standby_flag == 1){
-		  // TODO: add wakeup
+	  if (stop_flag == 1){
 		  SSD1306_TurnOff(); // Shut off display
 		  for (int i = 0; i < 4; i++){
 			  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_10);
-			  HAL_Delay(250);
+			  HAL_Delay(200);
 		  }
-		  HAL_PWR_EnterSTANDBYMode();  // Enter standby mode
+		  HAL_SuspendTick();
+		  HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_SLEEPENTRY_WFI);
+		  HAL_ResumeTick();
+		  SystemClock_Config();
+		  SSD1306_Init();
+		  stop_flag = 0;
 	  }
 
 	  // Track button inputs
@@ -134,12 +138,10 @@ int main(void)
 		  MAX9814 = MAX9814_Read();
 		  hum_val = DHT20_Humidity();
 		  ADC_VRef = Read_VADC();
+		  temp_avg = Temp_Avg(5);
+		  light_avg = OPT101_Avg(5);
 		  read_flag = 0; // Reset flag
 	  }
-
-	  // Obtain averages
-	  //temp_avg = Temp_Avg(25);
-	  //light_avg = OPT101_Avg(2);
 
 	  // Select screen with switch 1
 	  if (screen_flag == 1){

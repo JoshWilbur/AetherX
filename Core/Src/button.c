@@ -7,7 +7,8 @@ volatile int read_flag = 1;
 volatile int button_hist[4] = {0}; // Stores history of last 4 button presses
 volatile int button_flag = 0;
 volatile int i = 0;
-int standby_flag = 0;
+int stop_flag = 0;
+int wake_flag = 0;
 
 // USED FOR TESTING ONLY
 int Poll_Button1(void){
@@ -37,10 +38,9 @@ void Button_History(void){
     button_hist[i++] = button_flag;
     button_flag = 0;
 
-
     if (i > 3) {
         if (button_hist[0] == 4 && button_hist[1] == 5 && button_hist[2] == 4 && button_hist[3] == 5) {
-            standby_flag = 1;
+        	stop_flag = 1;
         }
         i = 0;  // Reset sequence after checking
     }
@@ -53,12 +53,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
     if(GPIO_Pin == GPIO_PIN_4){ // Check if PC4 is the interrupt pin
     	screen_flag = 1;
     	button_flag = 4;
+    	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_4); // Clear interrupt flag
     }
 
     // Switch 2
     if(GPIO_Pin == GPIO_PIN_5){ // Check if PC5 is the interrupt pin
     	LED_flag = !LED_flag;
     	button_flag = 5;
+    	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_5); // Clear interrupt flag
     }
 }
 

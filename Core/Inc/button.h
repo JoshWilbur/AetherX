@@ -11,6 +11,7 @@ extern volatile int screen_flag;
 extern volatile int LED_flag;
 extern volatile int read_flag;
 extern volatile int button_flag;
-extern int standby_flag;
+extern int stop_flag;
+extern int wake_flag;
 
 #endif /* INC_BUTTON_H_ */
