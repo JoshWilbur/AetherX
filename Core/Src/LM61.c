@@ -32,12 +32,11 @@ float LM61_Temp(int unit){
 }
 
 // Function to get average temperature
-float Temp_Avg(int readings){
+float Temp_Avg(float *readings, int len){
 	float sum = 0;
-	for (int i = 0; i < readings; i++){
-		sum += LM61_Temp(1);
-		HAL_Delay(10);
+	for (int i = 0; i < len; i++){
+		sum += readings[i];
 	}
-	float avg = sum / (float)readings;
+	float avg = sum / (float)len;
 	return avg;
 }

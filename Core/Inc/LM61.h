@@ -3,6 +3,6 @@
 
 int LM61_Read(void);
 float LM61_Temp(int unit);
-float Temp_Avg(int readings);
+float Temp_Avg(float *readings, int len);
 
 #endif /* INC_LM61_H_ */

@@ -27,12 +27,11 @@ float OPT101_Lux(void){
 	return lux;
 }
 
-float OPT101_Avg(int readings){
+float OPT101_Avg(float *readings, int len){
 	float sum = 0;
-	for (int i = 0; i < readings; i++){
-		sum += OPT101_Lux();
-		HAL_Delay(10);
+	for (int i = 0; i < len; i++){
+		sum += readings[i];
 	}
-	float avg = sum / (float)readings;
+	float avg = sum / (float)len;
 	return avg;
 }

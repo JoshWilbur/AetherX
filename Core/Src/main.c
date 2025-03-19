@@ -103,27 +103,43 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int delay_ms = 1;
-
   float temp_val, temp_avg, light_val, light_avg = -1;
   int hum_val = -1;
   int MAX9814 = -1;
+
+  // Buffers for averages
+  float temp_buf[32] = {0};
+  float light_buf[32] = {0};
+  uint8_t index = 0;
 
   // Update display
   //SSD1306_Clear();
   SSD1306_ScrollLeft(0,7);
   while(1){
-	  // Handle standby
+	  // Handle STOP mode activation
 	  if (stop_flag == 1){
 		  SSD1306_TurnOff(); // Shut off display
-		  for (int i = 0; i < 4; i++){
+		  for (int i = 0; i < 6; i++){
 			  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_10);
-			  HAL_Delay(200);
+			  HAL_Delay(100);
 		  }
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET); // Ensure LED is off
+
+		  // Disable peripherals
+		  HAL_I2C_DeInit(&hi2c1);
+		  HAL_I2C_DeInit(&hi2c3);
+		  HAL_ADC_DeInit(&hadc1);
 		  HAL_SuspendTick();
-		  HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_SLEEPENTRY_WFI);
+		  HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_SLEEPENTRY_WFI); // Enter stop mode
+
+		  // After STOP mode ends...
 		  HAL_ResumeTick();
 		  SystemClock_Config();
+
+		  // Re-enable peripherals
+		  MX_I2C1_Init();
+		  MX_I2C3_Init();
+		  MX_ADC1_Init();
 		  SSD1306_Init();
 		  stop_flag = 0;
 	  }
@@ -133,13 +149,24 @@ int main(void)
 
 	  // Obtain readings from sensors with timer interrupt
 	  if (read_flag == 1){
+		  // Sensor readings
 		  temp_val = LM61_Temp(1);
 		  light_val = OPT101_Lux();
 		  MAX9814 = MAX9814_Read();
 		  hum_val = DHT20_Humidity();
 		  ADC_VRef = Read_VADC();
-		  temp_avg = Temp_Avg(5);
-		  light_avg = OPT101_Avg(5);
+
+		  // Place data into buffers for easier avg processing
+		  temp_buf[index] = temp_val;
+		  light_buf[index] = light_val;
+		  index++;
+
+		  // Reset index to stay in bounds
+		  if (index == 31){
+			  temp_avg = Temp_Avg(temp_buf, 32);
+			  light_avg = OPT101_Avg(light_buf, 32);
+			  index = 0;
+		  }
 		  read_flag = 0; // Reset flag
 	  }
 
@@ -178,7 +205,7 @@ int main(void)
 	  }
 
 	  SSD1306_UpdateScreen();
-	  HAL_Delay(delay_ms);
+	  //HAL_Delay(delay_ms);
   }
     /* USER CODE END WHILE */
 
