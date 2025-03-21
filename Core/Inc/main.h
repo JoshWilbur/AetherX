@@ -49,6 +49,7 @@ extern RTC_HandleTypeDef hrtc;
 /* USER CODE BEGIN EC */
 extern uint16_t audio_buffer[1024];
 extern float ADC_VRef;
+extern RTC_TimeTypeDef sTime;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -60,6 +61,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 float Read_VADC(void);
+void RTC_UpdateTime(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

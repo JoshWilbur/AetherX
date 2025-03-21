@@ -38,6 +38,7 @@ RTC_HandleTypeDef hrtc;
 TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
+RTC_TimeTypeDef sTime;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -143,6 +144,9 @@ int main(void)
 		  SSD1306_Init();
 		  stop_flag = 0;
 	  }
+
+	  // Update time
+	  RTC_UpdateTime();
 
 	  // Track button inputs
 	  if (button_flag != 0) Button_History();
@@ -407,13 +411,14 @@ static void MX_RTC_Init(void)
   }
 
   /* USER CODE BEGIN Check_RTC_BKUP */
-
+  __HAL_RCC_PWR_CLK_ENABLE();
+  HAL_PWR_EnableBkUpAccess(); // Enable access to backup domain
   /* USER CODE END Check_RTC_BKUP */
 
   /** Initialize RTC and set the Time and Date
   */
   sTime.Hours = 0x20;
-  sTime.Minutes = 0x56;
+  sTime.Minutes = 0x52;
   sTime.Seconds = 0x0;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
@@ -421,9 +426,9 @@ static void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
-  sDate.Month = RTC_MONTH_JANUARY;
-  sDate.Date = 0x3;
+  sDate.WeekDay = RTC_WEEKDAY_THURSDAY;
+  sDate.Month = RTC_MONTH_MARCH;
+  sDate.Date = 0x20;
   sDate.Year = 0x0;
 
   if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
@@ -559,6 +564,12 @@ float Read_VADC(void){
 
     if (voltage == 0) return 3.0;
     return voltage;
+}
+
+// Updates RTC time
+void RTC_UpdateTime(void) {
+    HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+    HAL_RTC_GetDate(&hrtc, &(RTC_DateTypeDef){0}, RTC_FORMAT_BIN); // Read date to unlock RTC registers
 }
 
 /* USER CODE END 4 */

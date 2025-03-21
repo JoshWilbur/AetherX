@@ -68,6 +68,6 @@ void SSD1306_Show_Readings(float temp, float volts, float light, int hum){
 
 	// Print time
 	SSD1306_GotoXY(0, 50);
-	sprintf(buffer, "Time: %02d:%02d:%02d", time.Hours, time.Minutes, time.Seconds);
+	sprintf(buffer, "Time: %02d:%02d:%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
 	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
 }

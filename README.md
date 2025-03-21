@@ -19,8 +19,8 @@ All code for this project is within Core/src. Schematic, PCB and assembly files 
 
 **Software**
 
-* Get RTC working
 * Re-do reading functions with ADC rank (only do readings when displayed)
+* Screens: ADC voltage stats, humidity, time/date, clicker, settings?
 * Improve README
 * Signal processing for MAX9814 (frequency data via FFT, sound level in dB)
 
