@@ -11,8 +11,8 @@ All code for this project is within Core/src. Schematic, PCB and assembly files 
 * OPT101 - Light intensity at 650nm wavelength
 * MAX9814 - Microphone with signal output
 
-**Power consumption**
-
+**Power**
+This device is powered by 2x AA batteries. I tested the battery life of this device and found it can last ~1 month before a battery change is needed. Further improvements could be made to the code for additional power savings.
 * 2/25/25: 5mA @ 3V (15mW)
 
 # TODO:
