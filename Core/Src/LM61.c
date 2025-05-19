@@ -30,13 +30,3 @@ float LM61_Temp(int unit){
 	}
 	return -1;
 }
-
-// Function to get average temperature
-float Temp_Avg(float *readings, int len){
-	float sum = 0;
-	for (int i = 0; i < len; i++){
-		sum += readings[i];
-	}
-	float avg = sum / (float)len;
-	return avg;
-}

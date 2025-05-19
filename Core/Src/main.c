@@ -51,6 +51,7 @@ static void MX_RTC_Init(void);
 static void MX_I2C3_Init(void);
 static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
+float Average_Gen(float *readings, int len);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -167,8 +168,8 @@ int main(void)
 
 		  // Reset index to stay in bounds
 		  if (index == 31){
-			  temp_avg = Temp_Avg(temp_buf, 32);
-			  light_avg = OPT101_Avg(light_buf, 32);
+			  temp_avg = Average_Gen(temp_buf, 32);
+			  light_avg = Average_Gen(light_buf, 32);
 			  index = 0;
 		  }
 		  read_flag = 0; // Reset flag
@@ -195,11 +196,11 @@ int main(void)
 			  break;
 
 		  case 1:
-			  SSD1306_Temperature(temp_val, temp_avg);
+			  SSD1306_Screen(temp_val, temp_avg, "Temperature", "F");
 			  break;
 
 		  case 2:
-			  SSD1306_Light(light_val, light_avg);
+			  SSD1306_Screen(light_val, light_avg, "Light", "LUX");
 			  break;
 
 		  default:
@@ -570,6 +571,14 @@ float Read_VADC(void){
 void RTC_UpdateTime(void) {
     HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
     HAL_RTC_GetDate(&hrtc, &(RTC_DateTypeDef){0}, RTC_FORMAT_BIN); // Read date to unlock RTC registers
+}
+
+// Average generation function
+float Average_Gen(float *readings, int len){
+	float sum = 0;
+	for (int i = 0; i < len; i++) sum += readings[i];
+	float avg = sum / (float)len;
+	return avg;
 }
 
 /* USER CODE END 4 */

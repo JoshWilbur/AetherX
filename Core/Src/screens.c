@@ -2,40 +2,22 @@
 #include "fonts.h"
 #include "ssd1306.h"
 
-void SSD1306_Temperature(float temp, float avg_temp){
+void SSD1306_Screen(float stat, float avg, char *metric, char *unit){
 	char buffer[32];
 
+	// Print metric name
 	SSD1306_GotoXY(0, 10);
-	sprintf(buffer, "Temperature");
+	sprintf(buffer, "%s", metric);
 	SSD1306_Puts(buffer, &Font_11x18, SSD1306_COLOR_WHITE);
 
-	// Print temperature
+	// Print live value
 	SSD1306_GotoXY(0, 30);
-	sprintf(buffer, "Live: %.2f F", temp);
+	sprintf(buffer, "Live: %.2f %s", stat, unit);
 	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
 
-	// Print average temperature
+	// Print average value
 	SSD1306_GotoXY(0, 40);
-	sprintf(buffer, "Average: %.2f F", avg_temp);
-	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
-}
-
-
-void SSD1306_Light(float light, float light_avg){
-	char buffer[32];
-
-	SSD1306_GotoXY(0, 10);
-	sprintf(buffer, "Light");
-	SSD1306_Puts(buffer, &Font_11x18, SSD1306_COLOR_WHITE);
-
-	// Print temperature
-	SSD1306_GotoXY(0, 30);
-	sprintf(buffer, "Live: %.2f  Lux", light);
-	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
-
-	// Print average temperature
-	SSD1306_GotoXY(0, 40);
-	sprintf(buffer, "Average: %.2f  Lux", light_avg);
+	sprintf(buffer, "Average: %.2f %s", avg, unit);
 	SSD1306_Puts(buffer, &Font_7x10, SSD1306_COLOR_WHITE);
 }
 

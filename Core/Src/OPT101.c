@@ -26,12 +26,3 @@ float OPT101_Lux(void){
 	float lux = OPT101_volt / sensitivity;
 	return lux;
 }
-
-float OPT101_Avg(float *readings, int len){
-	float sum = 0;
-	for (int i = 0; i < len; i++){
-		sum += readings[i];
-	}
-	float avg = sum / (float)len;
-	return avg;
-}
