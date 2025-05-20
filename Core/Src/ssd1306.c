@@ -180,34 +180,33 @@ uint8_t SSD1306_Init(void) {
 	HAL_Delay(1000);
 
 	/* Init LCD */
-    /* Initialization sequence */
     SSD1306_WRITECOMMAND(0xAE); // Display OFF
     SSD1306_WRITECOMMAND(0x20); // Set Memory Addressing Mode
-    SSD1306_WRITECOMMAND(0x00); // Horizontal Addressing Mode
-    SSD1306_WRITECOMMAND(0xB0); // Set Page Start Address for Page Addressing Mode
+    SSD1306_WRITECOMMAND(0x02); // Page Addressing Mode
+    SSD1306_WRITECOMMAND(0xB0); // Set Page Start Address for Page Addressing Mode (Page 0 for pointer reset)
     SSD1306_WRITECOMMAND(0xC8); // Set COM Output Scan Direction (remapped)
-    SSD1306_WRITECOMMAND(0x00); // Set low column address
-    SSD1306_WRITECOMMAND(0x10); // Set high column address
+    SSD1306_WRITECOMMAND(0x00); // Set low column address (for pointer reset to column 0)
+    SSD1306_WRITECOMMAND(0x10); // Set high column address (for pointer reset to column 0)
     SSD1306_WRITECOMMAND(0x40); // Set start line address (0)
     SSD1306_WRITECOMMAND(0x81); // Set contrast control
-    SSD1306_WRITECOMMAND(0x01); // Contrast value (IE BRIGHTNESS)
-    SSD1306_WRITECOMMAND(0xA1); // Set segment re-map (remapped)
+    SSD1306_WRITECOMMAND(0xCF); // CHANGED: Contrast value (0xCF is a common bright value, 0x7F for medium)
+    SSD1306_WRITECOMMAND(0xA1); // Set segment re-map (A0/A1 depends on your display wiring)
     SSD1306_WRITECOMMAND(0xA6); // Set normal display
     SSD1306_WRITECOMMAND(0xA8); // Set multiplex ratio
     SSD1306_WRITECOMMAND(0x3F); // 64 multiplex (for 128x64)
     SSD1306_WRITECOMMAND(0xD3); // Set display offset
     SSD1306_WRITECOMMAND(0x00); // No offset
     SSD1306_WRITECOMMAND(0xD5); // Set display clock divide ratio
-    SSD1306_WRITECOMMAND(0xF0); // Oscillator frequency
+    SSD1306_WRITECOMMAND(0x80); // Oscillator frequency (already changed, good)
     SSD1306_WRITECOMMAND(0xD9); // Set pre-charge period
     SSD1306_WRITECOMMAND(0x22); // Pre-charge value
     SSD1306_WRITECOMMAND(0xDA); // Set COM pins hardware configuration
-    SSD1306_WRITECOMMAND(0x12); // Alternative COM pin configuration
+    SSD1306_WRITECOMMAND(0x12); // Alternative COM pin configuration (for 128x64 this is common)
     SSD1306_WRITECOMMAND(0xDB); // Set VCOMH Deselect Level
-    SSD1306_WRITECOMMAND(0x20); // 0.77x Vcc
+    SSD1306_WRITECOMMAND(0x20); // 0.77x Vcc (common)
     SSD1306_WRITECOMMAND(0x8D); // Enable charge pump regulator
     SSD1306_WRITECOMMAND(0x14); // Enable
-    SSD1306_WRITECOMMAND(0xAF); // Display ON
+    SSD1306_WRITECOMMAND(0xAF); // Display O
 
 	/* Clear screen */
 	SSD1306_Fill(SSD1306_COLOR_BLACK);
@@ -217,7 +216,7 @@ uint8_t SSD1306_Init(void) {
 
 	/* Set default values */
 	SSD1306.CurrentX = 0;
-	SSD1306.CurrentY = 10; // The offset is messed up, this hack works for now
+	SSD1306.CurrentY = 0;
 	SSD1306.Initialized = 1;
 
 	/* Return OK */
@@ -225,15 +224,14 @@ uint8_t SSD1306_Init(void) {
 }
 
 void SSD1306_UpdateScreen(void) {
-    SSD1306_WRITECOMMAND(0xB0);  // Start at page 0
-    SSD1306_WRITECOMMAND(0x00);  // Set column lower nibble
-    SSD1306_WRITECOMMAND(0x10);  // Set column higher nibble
+    for (uint8_t page = 0; page < (SSD1306_HEIGHT / 8); page++) {
+        SSD1306_WRITECOMMAND(0xB0 | page);
+        SSD1306_WRITECOMMAND(0x00);
+        SSD1306_WRITECOMMAND(0x10);
 
-    for (uint16_t i = 0; i < sizeof(SSD1306_Buffer); i += 16) {
-        ssd1306_I2C_WriteMulti(SSD1306_I2C_ADDR, 0x40, &SSD1306_Buffer[i], 16);
+        ssd1306_I2C_WriteMulti(SSD1306_I2C_ADDR, 0x40, &SSD1306_Buffer[page * SSD1306_WIDTH], SSD1306_WIDTH);
     }
 }
-
 
 void SSD1306_ToggleInvert(void) {
 	uint16_t i;
@@ -640,7 +638,7 @@ void ssd1306_I2C_WriteMulti(uint8_t address, uint8_t reg, uint8_t* data, uint16_
 	uint8_t i;
 	for(i = 0; i < count; i++)
 	dt[i+1] = data[i];
-	HAL_I2C_Master_Transmit(&hi2c3, address, dt, count+1, 10);
+	HAL_I2C_Master_Transmit(&hi2c3, address, dt, count+1, 15); // Increased timeout to account for 128 bytes @ 100kHz
 }
 
 
@@ -648,5 +646,5 @@ void ssd1306_I2C_Write(uint8_t address, uint8_t reg, uint8_t data) {
 	uint8_t dt[2];
 	dt[0] = reg;
 	dt[1] = data;
-	HAL_I2C_Master_Transmit(&hi2c3, address, dt, 2, 10);
+	HAL_I2C_Master_Transmit(&hi2c3, address, dt, 2, 15);
 }

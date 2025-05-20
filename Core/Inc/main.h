@@ -62,6 +62,8 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 float Read_VADC(void);
 void RTC_UpdateTime(void);
+float Average_Gen(float *readings, int len);
+void Detect_Extremum(float reading, float *high, float *low);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

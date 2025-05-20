@@ -22,6 +22,7 @@ This device is powered by 2x AA batteries. I tested the battery life of this dev
 * Re-do reading functions with ADC rank (only do readings when displayed)
 * Screens: ADC voltage stats, humidity, time/date, clicker, settings?
 * Improve README
+* Restructure data in structs?
 * Signal processing for MAX9814 (frequency data via FFT, sound level in dB)
 
 **Future Work**

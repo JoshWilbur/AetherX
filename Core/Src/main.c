@@ -20,6 +20,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define N_STAT 32
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -51,7 +52,6 @@ static void MX_RTC_Init(void);
 static void MX_I2C3_Init(void);
 static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
-float Average_Gen(float *readings, int len);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -102,17 +102,26 @@ int main(void)
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)audio_buffer, 1024);
   SSD1306_Init();
   /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  float temp_val, temp_avg, light_val, light_avg = -1;
+  // DECLARATION OF VARIABLES
+  float temp_val, temp_avg, light_val, light_avg, hum_avg = -1;
   int hum_val = -1;
   int MAX9814 = -1;
 
   // Buffers for averages
-  float temp_buf[32] = {0};
-  float light_buf[32] = {0};
+  float temp_buf[N_STAT] = {0};
+  float light_buf[N_STAT] = {0};
+  float hum_buf[N_STAT] = {0};
   uint8_t index = 0;
+
+  // Highs and lows
+  float temp_low = 200.0f;
+  float temp_high = -100.0f;
+  float light_low = 9000.0f;
+  float light_high = -9000.0f;
+  float hum_low = 101.0f;
+  float hum_high = -1.0f;
+  /* USER CODE BEGIN WHILE */
+
 
   // Update display
   //SSD1306_Clear();
@@ -161,15 +170,22 @@ int main(void)
 		  hum_val = DHT20_Humidity();
 		  ADC_VRef = Read_VADC();
 
+		  // Detect high and low temperatures
+		  Detect_Extremum(temp_val, &temp_low, &temp_high);
+		  Detect_Extremum(light_val, &light_low, &light_high);
+		  Detect_Extremum(hum_val, &hum_low, &hum_high);
+
 		  // Place data into buffers for easier avg processing
 		  temp_buf[index] = temp_val;
 		  light_buf[index] = light_val;
+		  hum_buf[index] = hum_val;
 		  index++;
 
 		  // Reset index to stay in bounds
-		  if (index == 31){
-			  temp_avg = Average_Gen(temp_buf, 32);
-			  light_avg = Average_Gen(light_buf, 32);
+		  if (index == N_STAT-1){
+			  temp_avg = Average_Gen(temp_buf, N_STAT);
+			  light_avg = Average_Gen(light_buf, N_STAT);
+			  hum_avg = Average_Gen(hum_buf, N_STAT);
 			  index = 0;
 		  }
 		  read_flag = 0; // Reset flag
@@ -196,11 +212,15 @@ int main(void)
 			  break;
 
 		  case 1:
-			  SSD1306_Screen(temp_val, temp_avg, "Temperature", "F");
+			  SSD1306_Screen(temp_val, temp_avg, "Temperature", "F", temp_high, temp_low);
 			  break;
 
 		  case 2:
-			  SSD1306_Screen(light_val, light_avg, "Light", "LUX");
+			  SSD1306_Screen(light_val, light_avg, "Light", "LUX", light_high, light_low);
+			  break;
+
+		  case 3:
+			  SSD1306_Screen(hum_val, hum_avg, "Humidity", "%", hum_high, hum_low);
 			  break;
 
 		  default:
@@ -577,8 +597,14 @@ void RTC_UpdateTime(void) {
 float Average_Gen(float *readings, int len){
 	float sum = 0;
 	for (int i = 0; i < len; i++) sum += readings[i];
-	float avg = sum / (float)len;
+	float avg = sum / ((float)(len - 1));
 	return avg;
+}
+
+// Function to update the high or low metric
+void Detect_Extremum(float reading, float *low, float *high){
+	if (reading > *high) *high = reading;
+	if (reading < *low) *low = reading;
 }
 
 /* USER CODE END 4 */
