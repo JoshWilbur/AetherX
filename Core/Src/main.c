@@ -122,9 +122,6 @@ int main(void)
   float hum_high = -1.0f;
   /* USER CODE BEGIN WHILE */
 
-
-  // Update display
-  //SSD1306_Clear();
   SSD1306_ScrollLeft(0,7);
   while(1){
 	  // Handle STOP mode activation

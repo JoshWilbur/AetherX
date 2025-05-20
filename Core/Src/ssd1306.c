@@ -181,32 +181,32 @@ uint8_t SSD1306_Init(void) {
 
 	/* Init LCD */
     SSD1306_WRITECOMMAND(0xAE); // Display OFF
-    SSD1306_WRITECOMMAND(0x20); // Set Memory Addressing Mode
-    SSD1306_WRITECOMMAND(0x02); // Page Addressing Mode
-    SSD1306_WRITECOMMAND(0xB0); // Set Page Start Address for Page Addressing Mode (Page 0 for pointer reset)
-    SSD1306_WRITECOMMAND(0xC8); // Set COM Output Scan Direction (remapped)
-    SSD1306_WRITECOMMAND(0x00); // Set low column address (for pointer reset to column 0)
-    SSD1306_WRITECOMMAND(0x10); // Set high column address (for pointer reset to column 0)
-    SSD1306_WRITECOMMAND(0x40); // Set start line address (0)
+    SSD1306_WRITECOMMAND(0x20); // Set memory addressing mode
+    SSD1306_WRITECOMMAND(0x02); // Page addressing mode
+    SSD1306_WRITECOMMAND(0xB0); // Set page start address for page addressing mode
+    SSD1306_WRITECOMMAND(0xC8); // Set COM output scan direction
+    SSD1306_WRITECOMMAND(0x00); // Set low column address
+    SSD1306_WRITECOMMAND(0x10); // Set high column address
+    SSD1306_WRITECOMMAND(0x40); // Set start line address
     SSD1306_WRITECOMMAND(0x81); // Set contrast control
-    SSD1306_WRITECOMMAND(0xCF); // CHANGED: Contrast value (0xCF is a common bright value, 0x7F for medium)
-    SSD1306_WRITECOMMAND(0xA1); // Set segment re-map (A0/A1 depends on your display wiring)
+    SSD1306_WRITECOMMAND(0xCF); // Contrast value
+    SSD1306_WRITECOMMAND(0xA1); // Set segment re-map
     SSD1306_WRITECOMMAND(0xA6); // Set normal display
     SSD1306_WRITECOMMAND(0xA8); // Set multiplex ratio
-    SSD1306_WRITECOMMAND(0x3F); // 64 multiplex (for 128x64)
+    SSD1306_WRITECOMMAND(0x3F); // 64 multiplex
     SSD1306_WRITECOMMAND(0xD3); // Set display offset
     SSD1306_WRITECOMMAND(0x00); // No offset
     SSD1306_WRITECOMMAND(0xD5); // Set display clock divide ratio
-    SSD1306_WRITECOMMAND(0x80); // Oscillator frequency (already changed, good)
+    SSD1306_WRITECOMMAND(0x80); // Oscillator frequency
     SSD1306_WRITECOMMAND(0xD9); // Set pre-charge period
     SSD1306_WRITECOMMAND(0x22); // Pre-charge value
     SSD1306_WRITECOMMAND(0xDA); // Set COM pins hardware configuration
-    SSD1306_WRITECOMMAND(0x12); // Alternative COM pin configuration (for 128x64 this is common)
-    SSD1306_WRITECOMMAND(0xDB); // Set VCOMH Deselect Level
-    SSD1306_WRITECOMMAND(0x20); // 0.77x Vcc (common)
+    SSD1306_WRITECOMMAND(0x12); // Alternative COM pin configuration
+    SSD1306_WRITECOMMAND(0xDB); // Set VCOMH deselect Level
+    SSD1306_WRITECOMMAND(0x20); // 0.77x Vcc
     SSD1306_WRITECOMMAND(0x8D); // Enable charge pump regulator
     SSD1306_WRITECOMMAND(0x14); // Enable
-    SSD1306_WRITECOMMAND(0xAF); // Display O
+    SSD1306_WRITECOMMAND(0xAF); // Display on
 
 	/* Clear screen */
 	SSD1306_Fill(SSD1306_COLOR_BLACK);
@@ -223,6 +223,7 @@ uint8_t SSD1306_Init(void) {
 	return 1;
 }
 
+// This function stole part of my sanity, never change
 void SSD1306_UpdateScreen(void) {
     for (uint8_t page = 0; page < (SSD1306_HEIGHT / 8); page++) {
         SSD1306_WRITECOMMAND(0xB0 | page);
