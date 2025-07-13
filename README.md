@@ -2,6 +2,8 @@
 
 AetherX is a precision environmental sensor which can gather a number of statistics in real time. This device was designed with ease of use and portability in mind. More details and an operation guide coming soon...
 
+![AetherX 1.0](Documentation/AetherX_1.jpg)
+
 All code for this project is within Core/src. Schematic, PCB and assembly files are contained within AetherX_KiCad.
 
 **Sensors:**
@@ -13,6 +15,7 @@ All code for this project is within Core/src. Schematic, PCB and assembly files 
 
 **Power**
 This device is powered by 2x AA batteries. I tested the battery life of this device and found it can last ~1 month before a battery change is needed. Further improvements could be made to the code for additional power savings.
+
 * 2/25/25: 5mA @ 3V (15mW)
 
 # TODO:
@@ -21,7 +24,6 @@ This device is powered by 2x AA batteries. I tested the battery life of this dev
 
 * Re-do reading functions with ADC rank (only do readings when displayed)
 * Screens: ADC voltage stats, humidity, time/date, clicker, settings?
-* Improve README
 * Restructure data in structs?
 * Signal processing for MAX9814 (frequency data via FFT, sound level in dB)
 
